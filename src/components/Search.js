@@ -1,5 +1,6 @@
 import {
     searchInputEl,
+    state,
     searchFormEl,
     jobListSearchEl,
     numberEl,
@@ -42,6 +43,9 @@ const submitHandler = async event => {
         // using destructuring
         const { jobItems } = data;
 
+        // update state
+        state.searchJobItems = jobItems;
+
         //remove spinner
         renderSpinner('search');
 
@@ -49,7 +53,7 @@ const submitHandler = async event => {
         numberEl.textContent = jobItems.length;
 
         //render job items
-        renderJobList(jobItems);
+        renderJobList();
     } catch (error) {
         renderSpinner('search');
         renderError(error.message);
