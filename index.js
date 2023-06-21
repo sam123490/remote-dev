@@ -136,7 +136,6 @@ const clickHandler = (event) => {
         })
         .then(data => {
             const { jobItem } = data;
-            console.log(jobItem);
             
             // remove spinner
             spinnerJobDetailsEl.classList.remove('spinner--visible');
