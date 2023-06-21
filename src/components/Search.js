@@ -38,8 +38,7 @@ const submitHandler = event => {
     fetch(`${BASE_API_URL}/jobs?search=${searchText}`)
         .then(response => {
             if (!response.ok) {
-                console.log('Something went wrong!');
-                return;
+                throw new Error('Resource issue (e.g. resource doesn\'t exist) or server issue');
             }
 
             return response.json();
@@ -58,7 +57,8 @@ const submitHandler = event => {
             renderJobList(jobItems);
         })
         .catch(error => {
-            console.log(`There was an error. Error message: ${error.message}`);
+            renderSpinner('search');
+            renderError(error.message);
         });
 };
 

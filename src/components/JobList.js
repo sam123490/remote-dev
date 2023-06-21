@@ -5,6 +5,7 @@ import {
 } from '../common.js';
 import renderSpinner from './Spinner.js';
 import renderJobDetails from './JobDetails.js';
+import renderError from './Error.js';
 
 const renderJobList = jobItems => {
     jobItems.slice(0, 7).forEach(jobItem => {
@@ -32,7 +33,7 @@ const renderJobList = jobItems => {
     });
 };
 
-const clickHandler = (event) => {
+const clickHandler = event => {
     // prevent default behaviour
     event.preventDefault();
 
@@ -58,8 +59,7 @@ const clickHandler = (event) => {
     fetch(`${BASE_API_URL}/jobs/${id}`)
         .then(response => {
             if (!response.ok) {
-                console.log('Something went wrong!');
-                return;
+                throw new Error('Resource issue (e.g. resource doesn\'t exist) or server issue');
             }
 
             return response.json();
@@ -74,7 +74,8 @@ const clickHandler = (event) => {
             renderJobDetails(jobItem);
         })
         .catch(error => {
-            console.log(`Something went wrong. Error message: ${error.message}`);
+            renderSpinner('job-details');
+            renderError(error.message);
         });
 };
 
