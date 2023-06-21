@@ -1,7 +1,8 @@
 import {
     BASE_API_URL,
     jobListSearchEl,
-    jobDetailsContentEl
+    jobDetailsContentEl,
+    getData
 } from '../common.js';
 import renderSpinner from './Spinner.js';
 import renderJobDetails from './JobDetails.js';
@@ -55,14 +56,9 @@ const clickHandler = async event => {
     // get the id of clicked job item
     const id = jobItemEl.children[0].getAttribute('href');
 
-    //fetch the job items data
     try {
-        const response = await fetch(`${BASE_API_URL}/jobs/${id}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.description);
-        }
+        //fetch the job items data
+        const data = await getData(`${BASE_API_URL}/jobs/${id}`);
 
         // using destructuring
         const { jobItem } = data;
