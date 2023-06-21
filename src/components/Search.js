@@ -10,7 +10,7 @@ import renderSpinner from './Spinner.js';
 import renderJobList from './JobList.js';
 
 
-const submitHandler = event => {
+const submitHandler = async event => {
     //prevent default behavior
     event.preventDefault();
 
@@ -33,33 +33,31 @@ const submitHandler = event => {
 
     //show spinner
     renderSpinner('search');
-
+    
     //fetch search results
-    fetch(`${BASE_API_URL}/jobs?search=${searchText}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Resource issue (e.g. resource doesn\'t exist) or server issue');
-            }
+    try {
+        const response = await fetch(`${BASE_API_URL}/jobs?search=${searchText}`);
+        const data = await response.json();
 
-            return response.json();
-        })
-        .then(data => {
-            // using destructuring
-            const { jobItems } = data;
+        if (!response.ok) {
+            throw new Error(data.description);
+        }
 
-            //remove spinner
-            renderSpinner('search');
+        // using destructuring
+        const { jobItems } = data;
 
-            //render number of results
-            numberEl.textContent = jobItems.length;
+        //remove spinner
+        renderSpinner('search');
 
-            //render job items
-            renderJobList(jobItems);
-        })
-        .catch(error => {
-            renderSpinner('search');
-            renderError(error.message);
-        });
+        //render number of results
+        numberEl.textContent = jobItems.length;
+
+        //render job items
+        renderJobList(jobItems);
+    } catch (error) {
+        renderSpinner('search');
+        renderError(error.message);
+    }
 };
 
 searchFormEl.addEventListener('submit', submitHandler);
