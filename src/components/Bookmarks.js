@@ -13,9 +13,12 @@ const clickHandler = event => {
     // update state
     if (state.bookmarkJobItems.some(bookmarkJobitem => bookmarkJobitem.id === state.activeJobItem.id)) {
         state.bookmarkJobItems = state.bookmarkJobItems.filter(bookmarkJobitem => bookmarkJobitem.id !== state.activeJobItem.id);
-        } else {
-            state.bookmarkJobItems.push(state.activeJobItem);
-        }
+    } else {
+        state.bookmarkJobItems.push(state.activeJobItem);
+    }
+
+    // persist data with local storage (not session)
+    localStorage.setItem('bookmarkJobItems', JSON.stringify(state.bookmarkJobItems));
 
     //update bookmark item
     document.querySelector('.job-info__bookmark-icon').classList.toggle('job-info__bookmark-icon--bookmarked');
