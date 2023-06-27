@@ -21,7 +21,7 @@ const renderJobList = (whichJobList = 'search') => {
     //determine the job items that should be rendered
     let jobItems;
     if (whichJobList === 'search') {
-        jobItems = state.searchJobItems.slice((state.currentPage - 1) * RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE);
+        jobItems = state.searchJobItems.slice(state.currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE);
     } else if (whichJobList === 'bookmarks') {
         jobItems = state.bookmarkJobItems;
     }
@@ -42,7 +42,7 @@ const renderJobList = (whichJobList = 'search') => {
                         </div>
                     </div>
                     <div class="job-item__right">
-                        <i class="fa-solid fa-bookmark job-item__bookmark-icon"></i>
+                        <i class="fa-solid fa-bookmark job-item__bookmark-icon ${state.bookmarkJobItems.some(bookmarkJobItem => bookmarkJobItem.id === jobItem.id) && 'job-item__bookmark-icon--bookmarked'}"></i>
                         <time class="job-item__time">${jobItem.daysAgo}d</time>
                     </div>
                 </a>
@@ -60,10 +60,7 @@ const clickHandler = async event => {
     const jobItemEl = event.target.closest('.job-item');
 
     // remove active class from previously selected job items
-    document.querySelectorAll('.job-item--active').forEach(jobItemWithActiveCLass => jobItemWithActiveCLass.remove('job-item--active'));
-
-    //add active class
-    jobItemEl.classList.add('job-item--active');
+    document.querySelectorAll('.job-item--active').forEach(jobItemWithActiveCLass => jobItemWithActiveCLass.classList.remove('job-item--active'));
 
     // remove job details section
     jobDetailsContentEl.innerHTML = '';
@@ -77,6 +74,9 @@ const clickHandler = async event => {
     // update state
     const allJobItems = [...state.searchJobItems, ...state.bookmarkJobItems];
     state.activeJobItem = allJobItems.find(jobItem => jobItem.id === +id);
+
+    // redner search job list
+    renderJobList();
 
     // add id to url
     history.pushState(null, '', `/#${id}`);

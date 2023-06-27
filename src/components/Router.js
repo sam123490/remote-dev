@@ -7,12 +7,16 @@ import {
 import renderError from './Error.js';
 import renderSpinner from './Spinner.js';
 import renderJobDetails from './JobDetails.js';
+import renderJobList from './JobList.js';
 
 const loadHashChangeHandler = async () => {
     //get id from url
     const id = window.location.hash.substring(1);
 
     if (id) {
+        // remove active class from previously selected job items
+        document.querySelectorAll('.job-item--active').forEach(jobItemWithActiveCLass => jobItemWithActiveCLass.classList.remove('job-item--active'));
+
         // remove preovious job details content
         jobDetailsContentEl.innerHTML = '';
 
@@ -28,6 +32,9 @@ const loadHashChangeHandler = async () => {
                     
             // update state
             state.activeJobItem = jobItem;
+
+            // render job list
+            renderJobList();
 
             // remove spinner
             renderSpinner('job-details');
